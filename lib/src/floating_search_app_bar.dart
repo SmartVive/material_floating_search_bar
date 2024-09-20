@@ -487,7 +487,11 @@ class FloatingSearchAppBarState extends ImplicitlyAnimatedWidgetState<
     final GestureDetector bar = GestureDetector(
       onTap: () {
         if (isOpen) {
-          hasFocus = !hasFocus;
+          if (!hasFocus) {
+            hasFocus = true;
+          } else {
+            SystemChannels.textInput.invokeMapMethod("TextInput.show");
+          }
           _input.moveCursorToEnd();
         } else if (!isAppBar) {
           isOpen = true;
