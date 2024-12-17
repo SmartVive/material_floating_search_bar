@@ -484,6 +484,8 @@ class FloatingSearchBarState extends ImplicitlyAnimatedWidgetState<
   double get v => animation.value;
   bool get isAnimating => _controller.isAnimating;
 
+  BoxConstraints? preBoxConstraints;
+
   @override
   void initState() {
     super.initState();
@@ -768,6 +770,14 @@ class FloatingSearchBarState extends ImplicitlyAnimatedWidgetState<
         clipBehavior: Clip.none,
         alignment: Alignment.topCenter,
         children: <Widget>[
+          LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
+            WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
+              if (preBoxConstraints == constraints) return;
+              preBoxConstraints = constraints;
+              rebuild();
+            });
+            return const SizedBox.shrink();
+          }),
           if (transition.isBodyInsideSearchBar && v > 0.0)
             Positioned.fill(
               child: Padding(
